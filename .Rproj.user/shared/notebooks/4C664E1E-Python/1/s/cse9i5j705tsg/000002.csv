@@ -1,3 +1,0 @@
-"2","Error in initialize_python(required_module, use_environment) : 
-  Your current architecture is 64bit however this version of Python is compiled for 32bit.
-"

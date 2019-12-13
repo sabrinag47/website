@@ -1,5 +1,0 @@
-"0","py_config()
-"
-"2","Error in py_initialize(config$python, config$libpython, config$pythonhome,  : 
-  Py_CompileString - The specified procedure could not be found.
-"

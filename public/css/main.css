@@ -91,10 +91,10 @@ html, body {
   margin: 20px 0;
 }
 .container a {
-  color: #181e66;
+  color: #f09605;
 }
 .container a:hover {
-  color: #181e66;
+  color: #f09605;
 }
 .container p img, .img-responsive {
   display: block;
@@ -145,13 +145,13 @@ html, body {
 }
 .social-links li a {
   font-size: 20px;
-  color: #181e66;
+  color: #f09605;
   padding: 10px;
   padding-bottom: 4px;
   transition: all .4s ease;
 }
 .social-links li a:hover {
-  color: #181e66;
+  color: #f09605;
 }
 .avatar {
   padding-top: 5%;
