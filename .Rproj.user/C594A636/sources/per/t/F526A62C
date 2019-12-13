@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1576199824148.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2226123369",
+    "id" : "F526A62C",
+    "lastKnownWriteTime" : 1576200244,
+    "last_content_update" : 1576200244393,
+    "path" : "C:/Users/Sabrina/Desktop/website/content/resume.Rmd",
+    "project_path" : "content/resume.Rmd",
+    "properties" : {
+        "cursorPosition" : "109,45",
+        "scrollLine" : "101",
+        "tempName" : "Untitled2"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

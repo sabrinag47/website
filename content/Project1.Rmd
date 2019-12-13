@@ -1,0 +1,193 @@
+---
+title: "Project1: Exploratory Data Analysis"
+date: 2019-10-21
+output:
+  html_document: default
+  pdf_document: default
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+##Author: Sabrina Guerra (smg4255)
+#Introduction
+
+*The datasets I have selected include data from the United States of America across various years.*
+*The first dataset includes populations from different years from the years 1900 through 2015. The varibes it contains are year, state and population.*
+*The second dataset includes cancer rates by sex in different states across counties from the years 1999 through 2003. The variables included are male and female rate of cancer, county,state, upper and lower confidence levels (95%) for male and females. *
+*I find these datasets interesting being that I want to work in healthcare.*
+*I expect there to increased cancer rates as time moves forward and that if the population increases the rates to increase*
+```{R}
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+#State population dataset
+state_pop <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-09-17/state_pop.csv")
+head(state_pop)
+```
+
+```{R}
+#US Cancer Rates Dataset
+install.packages("latticeExtra",repos = "http://cran.us.r-project.org")
+library(latticeExtra)
+
+cancer <- USCancerRates
+head(cancer)
+
+```
+#Wrangling/Tidying
+*I decided to eliminate some of the more confusing and less relavent variables like confidence levels and decided to calculate the average population per state. *
+
+```{R}
+mean_pop <- state_pop %>% group_by(state) %>% summarize(mean_pop=mean(pop, na.rm=T))
+head(mean_pop)
+mean_pop %>% arrange(desc(mean_pop))
+pop_2015 <- state_pop %>% filter(year == 2015) %>% group_by(state) %>% summarize(mean_pop_2015=mean(pop, na.rm = T))
+```
+*From this dataset, we determined that the states of Califonia, New York and Texas have the largest mean populations.*
+
+```{R}
+male_rate <- cancer %>% select(rate.male,rate.female,state) %>% group_by(state) %>% 
+  summarize(male=mean(rate.male, na.rm = T))
+female_rate <- cancer %>% select(rate.male,rate.female,state) %>% group_by(state) %>% 
+  summarize(female_cancer=mean(rate.female, na.rm = T))
+head(male_rate)
+male_rate %>% arrange(desc(male))
+head(female_rate)
+female_rate %>% arrange(desc(female_cancer))
+```
+*The male rates table indcates that Minnesota had the highest cancer rate in male between the years 1999 and 2003 with 301.39 cases per 100,000 people. Alaska has the highest ate with 183.28 per 100,000 people.*
+
+
+```{R}
+avg_county <- cancer %>% select(-LCL95.male,-UCL95.male, -LCL95.female, -UCL95.female) %>% group_by(state) %>% mutate(avg_rate=(rate.male+rate.female)/2)
+head(avg_county)
+avg_state <- avg_county %>% select(state,avg_rate) %>% group_by(state) %>% summarize(avg_state=mean(avg_rate,na.rm = T))
+head(avg_state)
+```
+#Joining/Merging
+```{R}
+x <- c(state.name)
+y <- state.abb[match(x,state.name)]
+avg_state$state <- state.abb[avg_state$state]
+merged <- full_join(mean_pop,avg_state, by = 'state')
+
+```
+
+```{R}
+head(merged)
+merged %>% arrange(desc(avg_state))
+merged %>% arrange(desc(mean_pop))
+```
+*The way the merged dataset was done was by a full join in order for all 50 states to be merged together and be able to see the mean populatio an average number of cancer rates per state. This allowed all the cases to be used. Some flaws with this merge is that it includes averages that span over a century for population and the cancer information is from the end of the century, which may lead to some inconsistencies. *
+*Some important information from this dataset is tht Kentucky has the largest cancer rates (combining male and female rates) and Texas has the lowest.*
+
+```{R}
+pop_var <- full_join(merged,pop_2015, by = 'state')
+head(pop_var)
+
+female_rate$state <- state.abb[female_rate$state]
+male_rate$state <- state.abb[male_rate$state]
+data <- full_join(merged,female_rate, by = 'state')
+complete <- full_join(data, male_rate, by = 'state')
+glimpse(complete)
+complete %>% arrange(desc(female_cancer))
+complete %>% arrange(desc(male))
+```
+*In this dataset, once again full joining allows all of male and female cancer rates be added per state. This provides a greater breakdown of data. This eliminates any swaying of data if the two rate are drastically different per state. This data indicates Alaska has the highest female cancer rate (n a small state when determined by population) and Minnesota has higest male rates (a large state based on population). * 
+*
+
+#Visualizing
+
+```{R}
+ggplot(complete, aes(x = mean_pop, y = avg_state, color = state)) + geom_point()
+```
+*This graph portray that when increasing mean population, cancer rates decrease. Lower mean populations have higher cancer rates.*
+*It can be observed tha New York, California, and Texas, fall outside of this trend as they have large popultions and rates.*
+```{R}
+complete$size <- ifelse(complete$mean_pop<median(complete$mean_pop),"small", "large")
+str(complete)
+ggplot(complete, aes(x = state, y = avg_state, color = size)) + geom_point() + 
+  theme(axis.text.x = element_text(angle=45, hjust = 1))
+```
+*This graph shows that there is no true correltion between state population size and cancer rates.*
+```{R}
+ggplot(complete, aes(state,avg_state, fill = size))+ 
+  geom_bar(stat = "summary",fun.y = "mean") + 
+  geom_errorbar(stat= "summary") + coord_flip()
+```
+*This plot again demostrates that large and small states have the same probability of having high cancer rates.*
+
+#Dimensionality Reduction
+```{R}
+complete1 <- complete %>% select(-state, -size)
+complete1 = data.frame(scale(complete1)) 
+complete2 <- complete1 %>% select_if(is.numeric)
+complete3 <- complete2 %>% na.omit
+cor(complete3)
+complete_pca <- princomp(complete3)
+names(complete_pca)
+summary(complete_pca)
+```
+*This information portrays the standard deviation, proportion of variance and cumulative proportions of the 'complete' dataset with the male, female and average cancer rates, with population size.* 
+```{R}
+eigval <- complete_pca$sdev^2
+varprop=round(eigval/sum(eigval),2)
+ggplot()+geom_bar(aes(y = varprop, x= 1:4), stat = "identity") + xlab("") +
+  geom_path(aes(y=varprop,x=1:4)) + 
+  geom_text(aes(x = 1:4, y = varprop, label = round(varprop, 2)), vjust=1, cl ="white", size = 5) +
+  scale_y_continuous(breaks = seq(0, .6, .2), labels = scales::percent)+
+  scale_x_continuous(breaks = 1:10)
+```
+*Correlations from the 'complete' dataset can be observed in this graph. This shows 93% of the total variance is explained from PC1 and PC2.*
+
+```{R}
+completef <- data.frame(PC1=complete_pca$scores[,1], PC2=complete_pca$scores[,2])
+ggplot(completef,aes(PC1,PC2))+geom_point()
+```
+*This graph indcates scores betweenthe first 2 components.*
+
+```{R}
+complete_pca$loadings[1:4,1:2] %>% as.data.frame %>% rownames_to_column %>%
+  ggplot()+ geom_hline(aes(yintercept=0),lty=2) + 
+  geom_vline(aes(xintercept=0),lty=2)+ ylab("PC2") + xlab("PC1") +
+  geom_segment(aes(x=0,y=0, xend=Comp.1, yend= Comp.2),arrow=arrow(), col="red")+
+  geom_label(aes(x=Comp.1*.9, y= Comp.2+.1,label=rowname))
+```
+
+```{R}
+merged1 <- merged %>% select(-state)
+merged1 = data.frame(scale(merged1))
+merged2 <- merged1 %>% select_if(is.numeric)
+merged3 <- merged2 %>% na.omit
+cor(merged3)
+merged_pca <- princomp(merged3)
+names(merged_pca)
+summary(merged_pca)
+```
+```{R}
+eigval2 <- merged_pca$sdev^2
+varprop2=round(eigval2/sum(eigval2),2)
+ggplot()+geom_bar(aes(y = varprop2, x= 1:2), stat = "identity") + xlab("") +
+  geom_path(aes(y=varprop2,x=1:2)) + 
+  geom_text(aes(x = 1:2, y = varprop2, label = round(varprop2, 2)), vjust=1, cl ="white", size = 5) +
+  scale_y_continuous(breaks = seq(0, .6, .2), labels = scales::percent)+
+  scale_x_continuous(breaks = 1:10)
+```
+```{R}
+mergedf <- data.frame(PC1=merged_pca$scores[,1], PC2=merged_pca$scores[,2])
+ggplot(mergedf,aes(PC1,PC2))+geom_point()
+```
+
+```{R}
+merged_pca$loadings[1:2,1:2] %>% as.data.frame %>% rownames_to_column %>%
+  ggplot()+ geom_hline(aes(yintercept=0),lty=2) + 
+  geom_vline(aes(xintercept=0),lty=2)+ ylab("PC2") + xlab("PC1") +
+  geom_segment(aes(x=0,y=0, xend=Comp.1, yend= Comp.2),arrow=arrow(), col="red")+
+  geom_label(aes(x=Comp.1*.9, y= Comp.2+.1,label=rowname))
+```
+
+*In conclusion, results indicate the data is not highly correlated or related to each other.* 
+*This data shows there are trends in the data but they are not sinifcant enough to be related. In this project, by combining two nonrelated datasets, we were able to observe the patterns of cancer rates across the United States and determine if there were any out of the ordinary statistics about cancer. This information can be proven as helpful to scientists and those who want to extend their understanding of cancer.*
+

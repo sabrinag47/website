@@ -1,0 +1,6 @@
+"0","fit6<-lm(time~size+nesting,data=bird)"
+"0","fitvals<-fit6$fitted.value"
+"0",""
+"0","resids<-fit6$residuals "
+"0","fitted<-fit6$fitted.values  "
+"0","ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, color='red')"

@@ -1,0 +1,3 @@
+"0",""
+"0","ggplot(bird, aes(x=nesting, y=time,group=size))+geom_point(aes(color=size))+  geom_smooth(method=""lm"",formula=y~1,se=F,fullrange=T,aes(color=size))+xlab(""nesting"")"
+"0",""

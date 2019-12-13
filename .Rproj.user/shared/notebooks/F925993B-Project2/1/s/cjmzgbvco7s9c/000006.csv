@@ -1,0 +1,2 @@
+"0",""
+"0","ggplot(mean_se, aes(x=size,y=mean_time))+geom_bar(stat=""identity"")+                           geom_errorbar(aes(ymax=mean_time+se, ymin=mean_time-se), width=.5)"

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sabrina Guerra</title>
+    <link>/</link>
+    <description>Recent content on Sabrina Guerra</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Thu, 12 Dec 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Blog: Python</title>
+      <link>/blog/blog_12dec2019/</link>
+      <pubDate>Thu, 12 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/blog_12dec2019/</guid>
+      <description>library(reticulate)hi&amp;lt;-&amp;quot;Hello&amp;quot;hi=&amp;quot;world&amp;quot;print(r.hi,hi)## Hello worldcat(c(hi,py$hi))## Hello worldPython and R are very both very useful and have similar languages but they each have their benefits.While the languages are distinct they can be used concurrently and be used to solve one problem.I find it interesting how python can organize large amounts of information and quantify it. An example of this would be the study of DNA nucleotides.</description>
+    </item>
+    
+    <item>
+      <title>Resume</title>
+      <link>/resume/</link>
+      <pubDate>Thu, 12 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/resume/</guid>
+      <description>Sabrina Guerra
+sabrinaguerra@utexas.edu
+Qualifications
+A highly motivated student who is Pharmacy Technician certified, as well as CPR/AED, First Aid and OSHA certified. Possesses great customer service skills with fluency in Spanish and English. Consistently shows strong work ethic and critical thinking skills through her experience as a Pharmacy Technician. Believes any challenge can be overcome with patience.
+Academics
+University of Texas at Austin
+Expected Date of Graduation: December 2019</description>
+    </item>
+    
+    <item>
+      <title>Project2: Modeling, Testing &amp; Predicting</title>
+      <link>/project2/</link>
+      <pubDate>Wed, 27 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/project2/</guid>
+      <description>##Project 2##Sabrina Guerra (smg4255)
+##IntroductionThe dataset I selected was chosen as it meet the criteria of 5 variables, 1 being categorical and 2 being numeric. The dataset I selected was about the extinction of birds. The variables include the species name, the averagetime of extinction on the British islands, the average number of nesting pairs, size, and status. The size is broken up into the categories of large or small.</description>
+    </item>
+    
+    <item>
+      <title>Project1: Exploratory Data Analysis</title>
+      <link>/project1/</link>
+      <pubDate>Mon, 21 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/project1/</guid>
+      <description>##Author: Sabrina Guerra (smg4255)#Introduction
+The datasets I have selected include data from the United States of America across various years.The first dataset includes populations from different years from the years 1900 through 2015. The varibes it contains are year, state and population.The second dataset includes cancer rates by sex in different states across counties from the years 1999 through 2003. The variables included are male and female rate of cancer, county,state, upper and lower confidence levels (95%) for male and females.</description>
+    </item>
+    
+    <item>
+      <title>Projects</title>
+      <link>/projects/</link>
+      <pubDate>Sun, 02 Oct 2016 22:55:05 -0400</pubDate>
+      
+      <guid>/projects/</guid>
+      <description>Projects Here are some projects I have been working on:
+  Project 1
+  Project 2
+  </description>
+    </item>
+    
+  </channel>
+</rss>

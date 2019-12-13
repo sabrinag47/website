@@ -1,0 +1,25 @@
+---
+title: "Blog: Python"
+date: 2019-12-12
+output: html_document
+---
+
+
+
+<pre class="r"><code>library(reticulate)
+hi&lt;-&quot;Hello&quot;</code></pre>
+<pre class="python"><code>hi=&quot;world&quot;
+print(r.hi,hi)</code></pre>
+<pre><code>## Hello world</code></pre>
+<pre class="r"><code>cat(c(hi,py$hi))</code></pre>
+<pre><code>## Hello world</code></pre>
+<p><em>Python and R are very both very useful and have similar languages but they each have their benefits.</em>
+<em>While the languages are distinct they can be used concurrently and be used to solve one problem.</em>
+<em>I find it interesting how python can organize large amounts of information and quantify it. An example of this would be the study of DNA nucleotides.</em>
+<em>By using Python, it becomes easier to determine differences between sequences and how they are aligned with each other.</em></p>
+<pre class="python"><code>my_seq=&quot;ATCATCATG&quot;
+
+import re
+re.findall(r&quot;\w\w\w&quot;,my_seq)</code></pre>
+<pre><code>## [&#39;ATC&#39;, &#39;ATC&#39;, &#39;ATG&#39;]</code></pre>
+<p><em>The example above shows how easy it is to observe 3-mers in a DNA sequence. This is particularly useful when wanting to know DNA sequences to observe amino acids and protein structures.</em></p>

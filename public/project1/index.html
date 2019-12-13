@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Sabrina Guerra" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Project1: Exploratory Data Analysis</title>
+    <meta name="generator" content="Hugo 0.60.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/project1/">Project1: Exploratory Data Analysis</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          October 21, 2019
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<p>##Author: Sabrina Guerra (smg4255)
+#Introduction</p>
+<p><em>The datasets I have selected include data from the United States of America across various years.</em>
+<em>The first dataset includes populations from different years from the years 1900 through 2015. The varibes it contains are year, state and population.</em>
+<em>The second dataset includes cancer rates by sex in different states across counties from the years 1999 through 2003. The variables included are male and female rate of cancer, county,state, upper and lower confidence levels (95%) for male and females. </em>
+<em>I find these datasets interesting being that I want to work in healthcare.</em>
+<em>I expect there to increased cancer rates as time moves forward and that if the population increases the rates to increase</em></p>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages -----------------</code></pre>
+<pre><code>## v tibble  2.1.3     v purrr   0.3.3
+## v tidyr   1.0.0     v stringr 1.4.0
+## v readr   1.3.1     v forcats 0.4.0</code></pre>
+<pre><code>## -- Conflicts --------------------------
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>#State population dataset
+state_pop &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-09-17/state_pop.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   year = col_double(),
+##   state = col_character(),
+##   pop = col_double()
+## )</code></pre>
+<pre class="r"><code>head(state_pop)</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##    year state     pop
+##   &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;
+## 1  1900 AL    1830000
+## 2  1901 AL    1907000
+## 3  1902 AL    1935000
+## 4  1903 AL    1957000
+## 5  1904 AL    1978000
+## 6  1905 AL    2012000</code></pre>
+<pre class="r"><code>#US Cancer Rates Dataset
+install.packages(&quot;latticeExtra&quot;,repos = &quot;http://cran.us.r-project.org&quot;)</code></pre>
+<pre><code>## Installing package into &#39;C:/Users/Sabrina/Documents/R/win-library/3.6&#39;
+## (as &#39;lib&#39; is unspecified)</code></pre>
+<pre><code>## package &#39;latticeExtra&#39; successfully unpacked and MD5 sums checked
+## 
+## The downloaded binary packages are in
+##  C:\Users\Sabrina\AppData\Local\Temp\RtmpQbyRIl\downloaded_packages</code></pre>
+<pre class="r"><code>library(latticeExtra)</code></pre>
+<pre><code>## Loading required package: lattice</code></pre>
+<pre><code>## Loading required package: RColorBrewer</code></pre>
+<pre><code>## 
+## Attaching package: &#39;latticeExtra&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     layer</code></pre>
+<pre class="r"><code>cancer &lt;- USCancerRates
+head(cancer)</code></pre>
+<pre><code>##                 rate.male LCL95.male UCL95.male rate.female LCL95.female
+## alabama,pickens     363.7      311.1      423.2       151.0        123.6
+## alabama,bullock     345.7      274.2      431.4       140.5        102.8
+## alabama,russell     340.7      304.5      380.9       182.3        161.3
+## alabama,barbour     335.9      288.9      389.1       185.3        157.2
+## alabama,dallas      330.1      293.4      370.6       172.0        151.4
+## alabama,greene      328.1      255.9      416.6       124.1         88.5
+##                 UCL95.female   state         county
+## alabama,pickens        183.6 Alabama Pickens County
+## alabama,bullock        189.7 Alabama Bullock County
+## alabama,russell        205.5 Alabama Russell County
+## alabama,barbour        217.5 Alabama Barbour County
+## alabama,dallas         195.0 Alabama  Dallas County
+## alabama,greene         171.7 Alabama  Greene County</code></pre>
+<p>#Wrangling/Tidying
+<em>I decided to eliminate some of the more confusing and less relavent variables like confidence levels and decided to calculate the average population per state. </em></p>
+<pre class="r"><code>mean_pop &lt;- state_pop %&gt;% group_by(state) %&gt;% summarize(mean_pop=mean(pop, na.rm=T))
+head(mean_pop)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   state  mean_pop
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 AK      457582.
+## 2 AL     3294073.
+## 3 AR     2047458.
+## 4 AZ     2044898.
+## 5 CA    16665527.
+## 6 CO     2193060.</code></pre>
+<pre class="r"><code>mean_pop %&gt;% arrange(desc(mean_pop))</code></pre>
+<pre><code>## # A tibble: 51 x 2
+##    state  mean_pop
+##    &lt;chr&gt;     &lt;dbl&gt;
+##  1 CA    16665527.
+##  2 NY    14968232.
+##  3 TX    11252009.
+##  4 PA    10541881.
+##  5 IL     9407587.
+##  6 OH     8624785.
+##  7 MI     6886250.
+##  8 FL     6810191.
+##  9 NJ     5683516.
+## 10 MA     4986927.
+## # ... with 41 more rows</code></pre>
+<pre class="r"><code>pop_2015 &lt;- state_pop %&gt;% filter(year == 2015) %&gt;% group_by(state) %&gt;% summarize(mean_pop_2015=mean(pop, na.rm = T))</code></pre>
+<p><em>From this dataset, we determined that the states of Califonia, New York and Texas have the largest mean populations.</em></p>
+<pre class="r"><code>male_rate &lt;- cancer %&gt;% select(rate.male,rate.female,state) %&gt;% group_by(state) %&gt;% 
+  summarize(male=mean(rate.male, na.rm = T))
+female_rate &lt;- cancer %&gt;% select(rate.male,rate.female,state) %&gt;% group_by(state) %&gt;% 
+  summarize(female_cancer=mean(rate.female, na.rm = T))
+head(male_rate)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   state       male
+##   &lt;fct&gt;      &lt;dbl&gt;
+## 1 Alabama     288.
+## 2 Alaska      262.
+## 3 Arizona     207.
+## 4 Arkansas    288.
+## 5 California  222.
+## 6 Colorado    204.</code></pre>
+<pre class="r"><code>male_rate %&gt;% arrange(desc(male))</code></pre>
+<pre><code>## # A tibble: 49 x 2
+##    state           male
+##    &lt;fct&gt;          &lt;dbl&gt;
+##  1 Mississippi     301.
+##  2 Louisiana       301.
+##  3 Kentucky        298.
+##  4 South Carolina  290.
+##  5 Arkansas        288.
+##  6 Alabama         288.
+##  7 Georgia         287.
+##  8 Tennessee       285.
+##  9 Virginia        279.
+## 10 North Carolina  276.
+## # ... with 39 more rows</code></pre>
+<pre class="r"><code>head(female_rate)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   state      female_cancer
+##   &lt;fct&gt;              &lt;dbl&gt;
+## 1 Alabama             162.
+## 2 Alaska              183.
+## 3 Arizona             144.
+## 4 Arkansas            170.
+## 5 California          161.
+## 6 Colorado            151.</code></pre>
+<pre class="r"><code>female_rate %&gt;% arrange(desc(female_cancer))</code></pre>
+<pre><code>## # A tibble: 49 x 2
+##    state         female_cancer
+##    &lt;fct&gt;                 &lt;dbl&gt;
+##  1 Alaska                 183.
+##  2 Kentucky               182.
+##  3 West Virginia          181.
+##  4 Louisiana              180.
+##  5 Delaware               178.
+##  6 New Jersey             178.
+##  7 Maine                  178.
+##  8 Virginia               175.
+##  9 New York               174.
+## 10 Nevada                 173.
+## # ... with 39 more rows</code></pre>
+<p><em>The male rates table indcates that Minnesota had the highest cancer rate in male between the years 1999 and 2003 with 301.39 cases per 100,000 people. Alaska has the highest ate with 183.28 per 100,000 people.</em></p>
+<pre class="r"><code>avg_county &lt;- cancer %&gt;% select(-LCL95.male,-UCL95.male, -LCL95.female, -UCL95.female) %&gt;% group_by(state) %&gt;% mutate(avg_rate=(rate.male+rate.female)/2)
+head(avg_county)</code></pre>
+<pre><code>## # A tibble: 6 x 5
+## # Groups:   state [1]
+##   rate.male rate.female state   county         avg_rate
+##       &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   &lt;I&lt;chr&gt;&gt;          &lt;dbl&gt;
+## 1      364.        151  Alabama Pickens County     257.
+## 2      346.        140. Alabama Bullock County     243.
+## 3      341.        182. Alabama Russell County     262.
+## 4      336.        185. Alabama Barbour County     261.
+## 5      330.        172  Alabama Dallas County      251.
+## 6      328.        124. Alabama Greene County      226.</code></pre>
+<pre class="r"><code>avg_state &lt;- avg_county %&gt;% select(state,avg_rate) %&gt;% group_by(state) %&gt;% summarize(avg_state=mean(avg_rate,na.rm = T))
+head(avg_state)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   state      avg_state
+##   &lt;fct&gt;          &lt;dbl&gt;
+## 1 Alabama         225.
+## 2 Alaska          214.
+## 3 Arizona         175.
+## 4 Arkansas        229.
+## 5 California      192.
+## 6 Colorado        174.</code></pre>
+<p>#Joining/Merging</p>
+<pre class="r"><code>x &lt;- c(state.name)
+y &lt;- state.abb[match(x,state.name)]
+avg_state$state &lt;- state.abb[avg_state$state]
+merged &lt;- full_join(mean_pop,avg_state, by = &#39;state&#39;)</code></pre>
+<pre class="r"><code>head(merged)</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   state  mean_pop avg_state
+##   &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 AK      457582.      214.
+## 2 AL     3294073.      225.
+## 3 AR     2047458.      229.
+## 4 AZ     2044898.      175.
+## 5 CA    16665527.      192.
+## 6 CO     2193060.      174.</code></pre>
+<pre class="r"><code>merged %&gt;% arrange(desc(avg_state))</code></pre>
+<pre><code>## # A tibble: 51 x 3
+##    state mean_pop avg_state
+##    &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+##  1 KY    3139753.      241.
+##  2 KS    2135756       240.
+##  3 MN    3437172.      235.
+##  4 AR    2047458.      229.
+##  5 SD     665790.      228.
+##  6 RI     819150.      227.
+##  7 VT     442690.      227.
+##  8 WA    3162419.      227.
+##  9 GA    4755548.      226.
+## 10 AL    3294073.      225.
+## # ... with 41 more rows</code></pre>
+<pre class="r"><code>merged %&gt;% arrange(desc(mean_pop))</code></pre>
+<pre><code>## # A tibble: 51 x 3
+##    state  mean_pop avg_state
+##    &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+##  1 CA    16665527.      192.
+##  2 NY    14968232.      220.
+##  3 TX    11252009.      166.
+##  4 PA    10541881.      207.
+##  5 IL     9407587.      219.
+##  6 OH     8624785.      215.
+##  7 MI     6886250.      189.
+##  8 FL     6810191.      211.
+##  9 NJ     5683516.      178.
+## 10 MA     4986927.      204.
+## # ... with 41 more rows</code></pre>
+<p><em>The way the merged dataset was done was by a full join in order for all 50 states to be merged together and be able to see the mean populatio an average number of cancer rates per state. This allowed all the cases to be used. Some flaws with this merge is that it includes averages that span over a century for population and the cancer information is from the end of the century, which may lead to some inconsistencies. </em>
+<em>Some important information from this dataset is tht Kentucky has the largest cancer rates (combining male and female rates) and Texas has the lowest.</em></p>
+<pre class="r"><code>pop_var &lt;- full_join(merged,pop_2015, by = &#39;state&#39;)
+head(pop_var)</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   state  mean_pop avg_state mean_pop_2015
+##   &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;
+## 1 AK      457582.      214.        738432
+## 2 AL     3294073.      225.       4858979
+## 3 AR     2047458.      229.       2978204
+## 4 AZ     2044898.      175.       6828065
+## 5 CA    16665527.      192.      39144818
+## 6 CO     2193060.      174.       5456574</code></pre>
+<pre class="r"><code>female_rate$state &lt;- state.abb[female_rate$state]
+male_rate$state &lt;- state.abb[male_rate$state]
+data &lt;- full_join(merged,female_rate, by = &#39;state&#39;)
+complete &lt;- full_join(data, male_rate, by = &#39;state&#39;)
+glimpse(complete)</code></pre>
+<pre><code>## Observations: 51
+## Variables: 5
+## $ state         &lt;chr&gt; &quot;AK&quot;, &quot;AL&quot;, &quot;AR&quot;, &quot;AZ&quot;, &quot;CA&quot;, &quot;CO&quot;, &quot;CT&quot;, &quot;DC&quot;, &quot;DE&quot;,...
+## $ mean_pop      &lt;dbl&gt; 457582.5, 3294073.2, 2047457.6, 2044898.4, 16665526.6...
+## $ avg_state     &lt;dbl&gt; 214.1857, 224.9336, 228.6007, 175.3167, 191.6351, 174...
+## $ female_cancer &lt;dbl&gt; 183.2812, 162.3254, 169.5547, 143.9933, 161.0070, 150...
+## $ male          &lt;dbl&gt; 261.7000, 287.5418, 287.6467, 206.6400, 222.2632, 204...</code></pre>
+<pre class="r"><code>complete %&gt;% arrange(desc(female_cancer))</code></pre>
+<pre><code>## # A tibble: 51 x 5
+##    state mean_pop avg_state female_cancer  male
+##    &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;
+##  1 AK     457582.      214.          183.  262.
+##  2 KS    2135756       240.          182.  298.
+##  3 WA    3162419.      227.          181.  272.
+##  4 KY    3139753.      241.          180.  301.
+##  5 DE     461635.      224.          178.  270.
+##  6 NH     737558.      213.          178.  249.
+##  7 LA    3112672.      220.          178.  263.
+##  8 VT     442690.      227.          175.  279.
+##  9 NM     964448.      210.          174.  247.
+## 10 NE    1445529.      213.          173.  252 
+## # ... with 41 more rows</code></pre>
+<pre class="r"><code>complete %&gt;% arrange(desc(male))</code></pre>
+<pre><code>## # A tibble: 51 x 5
+##    state  mean_pop avg_state female_cancer  male
+##    &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;
+##  1 MN     3437172.      235.          168.  301.
+##  2 KY     3139753.      241.          180.  301.
+##  3 KS     2135756       240.          182.  298.
+##  4 RI      819150.      227.          164.  290.
+##  5 AR     2047458.      229.          170.  288.
+##  6 AL     3294073.      225.          162.  288.
+##  7 GA     4755548.      226.          166.  287.
+##  8 SD      665790.      228.          172.  285.
+##  9 VT      442690.      227.          175.  279.
+## 10 NY    14968232.      220.          165.  276.
+## # ... with 41 more rows</code></pre>
+<p><em>In this dataset, once again full joining allows all of male and female cancer rates be added per state. This provides a greater breakdown of data. This eliminates any swaying of data if the two rate are drastically different per state. This data indicates Alaska has the highest female cancer rate (n a small state when determined by population) and Minnesota has higest male rates (a large state based on population). </em>
+*</p>
+<p>#Visualizing</p>
+<pre class="r"><code>ggplot(complete, aes(x = mean_pop, y = avg_state, color = state)) + geom_point()</code></pre>
+<pre><code>## Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+<em>This graph portray that when increasing mean population, cancer rates decrease. Lower mean populations have higher cancer rates.</em>
+<em>It can be observed tha New York, California, and Texas, fall outside of this trend as they have large popultions and rates.</em></p>
+<pre class="r"><code>complete$size &lt;- ifelse(complete$mean_pop&lt;median(complete$mean_pop),&quot;small&quot;, &quot;large&quot;)
+str(complete)</code></pre>
+<pre><code>## Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    51 obs. of  6 variables:
+##  $ state        : chr  &quot;AK&quot; &quot;AL&quot; &quot;AR&quot; &quot;AZ&quot; ...
+##  $ mean_pop     : num  457582 3294073 2047458 2044898 16665527 ...
+##  $ avg_state    : num  214 225 229 175 192 ...
+##  $ female_cancer: num  183 162 170 144 161 ...
+##  $ male         : num  262 288 288 207 222 ...
+##  $ size         : chr  &quot;small&quot; &quot;large&quot; &quot;small&quot; &quot;small&quot; ...</code></pre>
+<pre class="r"><code>ggplot(complete, aes(x = state, y = avg_state, color = size)) + geom_point() + 
+  theme(axis.text.x = element_text(angle=45, hjust = 1))</code></pre>
+<pre><code>## Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+<em>This graph shows that there is no true correltion between state population size and cancer rates.</em></p>
+<pre class="r"><code>ggplot(complete, aes(state,avg_state, fill = size))+ 
+  geom_bar(stat = &quot;summary&quot;,fun.y = &quot;mean&quot;) + 
+  geom_errorbar(stat= &quot;summary&quot;) + coord_flip()</code></pre>
+<pre><code>## Warning: Removed 2 rows containing non-finite values (stat_summary).
+
+## Warning: Removed 2 rows containing non-finite values (stat_summary).</code></pre>
+<pre><code>## No summary function supplied, defaulting to `mean_se()</code></pre>
+<pre><code>## Warning: Removed 49 rows containing missing values (geom_errorbar).</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+<em>This plot again demostrates that large and small states have the same probability of having high cancer rates.</em></p>
+<p>#Dimensionality Reduction</p>
+<pre class="r"><code>complete1 &lt;- complete %&gt;% select(-state, -size)
+complete1 = data.frame(scale(complete1)) 
+complete2 &lt;- complete1 %&gt;% select_if(is.numeric)
+complete3 &lt;- complete2 %&gt;% na.omit
+cor(complete3)</code></pre>
+<pre><code>##                 mean_pop  avg_state female_cancer       male
+## mean_pop       1.0000000 -0.1905443    -0.2777080 -0.1573501
+## avg_state     -0.1905443  1.0000000     0.8403617  0.9784404
+## female_cancer -0.2777080  0.8403617     1.0000000  0.7220809
+## male          -0.1573501  0.9784404     0.7220809  1.0000000</code></pre>
+<pre class="r"><code>complete_pca &lt;- princomp(complete3)
+names(complete_pca)</code></pre>
+<pre><code>## [1] &quot;sdev&quot;     &quot;loadings&quot; &quot;center&quot;   &quot;scale&quot;    &quot;n.obs&quot;    &quot;scores&quot;   &quot;call&quot;</code></pre>
+<pre class="r"><code>summary(complete_pca)</code></pre>
+<pre><code>## Importance of components:
+##                           Comp.1    Comp.2     Comp.3       Comp.4
+## Standard deviation     1.6478281 0.9651908 0.52718072 0.0546100715
+## Proportion of Variance 0.6913068 0.2371775 0.07075645 0.0007592635
+## Cumulative Proportion  0.6913068 0.9284843 0.99924074 1.0000000000</code></pre>
+<p><em>This information portrays the standard deviation, proportion of variance and cumulative proportions of the ‘complete’ dataset with the male, female and average cancer rates, with population size.</em></p>
+<pre class="r"><code>eigval &lt;- complete_pca$sdev^2
+varprop=round(eigval/sum(eigval),2)
+ggplot()+geom_bar(aes(y = varprop, x= 1:4), stat = &quot;identity&quot;) + xlab(&quot;&quot;) +
+  geom_path(aes(y=varprop,x=1:4)) + 
+  geom_text(aes(x = 1:4, y = varprop, label = round(varprop, 2)), vjust=1, cl =&quot;white&quot;, size = 5) +
+  scale_y_continuous(breaks = seq(0, .6, .2), labels = scales::percent)+
+  scale_x_continuous(breaks = 1:10)</code></pre>
+<pre><code>## Warning: Ignoring unknown parameters: cl</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+<em>Correlations from the ‘complete’ dataset can be observed in this graph. This shows 93% of the total variance is explained from PC1 and PC2.</em></p>
+<pre class="r"><code>completef &lt;- data.frame(PC1=complete_pca$scores[,1], PC2=complete_pca$scores[,2])
+ggplot(completef,aes(PC1,PC2))+geom_point()</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-14-1.png" width="672" />
+<em>This graph indcates scores betweenthe first 2 components.</em></p>
+<pre class="r"><code>complete_pca$loadings[1:4,1:2] %&gt;% as.data.frame %&gt;% rownames_to_column %&gt;%
+  ggplot()+ geom_hline(aes(yintercept=0),lty=2) + 
+  geom_vline(aes(xintercept=0),lty=2)+ ylab(&quot;PC2&quot;) + xlab(&quot;PC1&quot;) +
+  geom_segment(aes(x=0,y=0, xend=Comp.1, yend= Comp.2),arrow=arrow(), col=&quot;red&quot;)+
+  geom_label(aes(x=Comp.1*.9, y= Comp.2+.1,label=rowname))</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<pre class="r"><code>merged1 &lt;- merged %&gt;% select(-state)
+merged1 = data.frame(scale(merged1))
+merged2 &lt;- merged1 %&gt;% select_if(is.numeric)
+merged3 &lt;- merged2 %&gt;% na.omit
+cor(merged3)</code></pre>
+<pre><code>##             mean_pop  avg_state
+## mean_pop   1.0000000 -0.1905443
+## avg_state -0.1905443  1.0000000</code></pre>
+<pre class="r"><code>merged_pca &lt;- princomp(merged3)
+names(merged_pca)</code></pre>
+<pre><code>## [1] &quot;sdev&quot;     &quot;loadings&quot; &quot;center&quot;   &quot;scale&quot;    &quot;n.obs&quot;    &quot;scores&quot;   &quot;call&quot;</code></pre>
+<pre class="r"><code>summary(merged_pca)</code></pre>
+<pre><code>## Importance of components:
+##                           Comp.1    Comp.2
+## Standard deviation     1.0825616 0.8925859
+## Proportion of Variance 0.5953014 0.4046986
+## Cumulative Proportion  0.5953014 1.0000000</code></pre>
+<pre class="r"><code>eigval2 &lt;- merged_pca$sdev^2
+varprop2=round(eigval2/sum(eigval2),2)
+ggplot()+geom_bar(aes(y = varprop2, x= 1:2), stat = &quot;identity&quot;) + xlab(&quot;&quot;) +
+  geom_path(aes(y=varprop2,x=1:2)) + 
+  geom_text(aes(x = 1:2, y = varprop2, label = round(varprop2, 2)), vjust=1, cl =&quot;white&quot;, size = 5) +
+  scale_y_continuous(breaks = seq(0, .6, .2), labels = scales::percent)+
+  scale_x_continuous(breaks = 1:10)</code></pre>
+<pre><code>## Warning: Ignoring unknown parameters: cl</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<pre class="r"><code>mergedf &lt;- data.frame(PC1=merged_pca$scores[,1], PC2=merged_pca$scores[,2])
+ggplot(mergedf,aes(PC1,PC2))+geom_point()</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<pre class="r"><code>merged_pca$loadings[1:2,1:2] %&gt;% as.data.frame %&gt;% rownames_to_column %&gt;%
+  ggplot()+ geom_hline(aes(yintercept=0),lty=2) + 
+  geom_vline(aes(xintercept=0),lty=2)+ ylab(&quot;PC2&quot;) + xlab(&quot;PC1&quot;) +
+  geom_segment(aes(x=0,y=0, xend=Comp.1, yend= Comp.2),arrow=arrow(), col=&quot;red&quot;)+
+  geom_label(aes(x=Comp.1*.9, y= Comp.2+.1,label=rowname))</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p><em>In conclusion, results indicate the data is not highly correlated or related to each other.</em>
+<em>This data shows there are trends in the data but they are not sinifcant enough to be related. In this project, by combining two nonrelated datasets, we were able to observe the patterns of cancer rates across the United States and determine if there were any out of the ordinary statistics about cancer. This information can be proven as helpful to scientists and those who want to extend their understanding of cancer.</em></p>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

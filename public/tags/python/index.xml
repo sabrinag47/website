@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Python on Sabrina Guerra</title>
+    <link>/tags/python/</link>
+    <description>Recent content in Python on Sabrina Guerra</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Tue, 10 Dec 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Blog: Python</title>
+      <link>/blog/python/</link>
+      <pubDate>Tue, 10 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/python/</guid>
+      <description>library(reticulate)hi&amp;lt;-&amp;quot;Hello&amp;quot;import pandashi=&amp;quot;world&amp;quot;print(r.hi,hi)</description>
+    </item>
+    
+  </channel>
+</rss>

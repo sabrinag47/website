@@ -1,0 +1,254 @@
+---
+title: "Project2: Modeling, Testing & Predicting"
+date: 2019-11-27
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Project 2
+##Sabrina Guerra (smg4255)
+
+##Introduction
+*The dataset I selected was chosen as it meet the criteria of 5 variables, 1 being categorical and 2 being numeric. The dataset I selected was about the extinction of birds. The variables include the species name, the averagetime of extinction on the British islands, the average number of nesting pairs, size, and status. The size is broken up into the categories of large or small. The status is a categorical variable that includes resident or migrant. The time and nesting variables are numeric. I was interested in this dataset because as a biology major, I am interested in the conservation of species of animals that are endangered and could become extict.*
+```{R}
+library(LearnBayes)
+
+bird<-birdextinct
+bird
+```
+
+##MANOVA
+
+```{R}
+man1<-manova(cbind(time,nesting)~status, data=bird)
+summary.aov(man1)
+
+man2<-manova(cbind(time,nesting)~size, data=bird)
+summary.aov(man2)
+```
+*For the MANOVAs performed above, the p values are all greater than 0.05 meaning these values are not significant.The MANOVAs compare the relationships between nesting and time to size for the first one and nesting, tim and status in the second.*
+*The assumptions for MANOVAs include: 1. random, independent observations, 2. multivariate normality of dependent variables, 3. homogeneity of covariance matrices, 4. linear relationships between the dependent variable, 5. no extreme outliers, and 6. no multicollinearity. Some of these assumptions are met as they are from different islands, but there are outliers and could be correlational. * 
+*The number of tests that would have been performed if the results had been significant would be 1 MANOVA + 2 ANOVA + 4 t-tests since there are 2 numeric values and two categorical, each with two levels. That is a total of 7 tests.*
+
+
+
+
+##Randomization Test
+```{R}
+pairwise.t.test(bird$time, bird$status, p.adj = "none")
+
+```
+```{R}
+pairwise.t.test(bird$time, bird$size, p.adj = "none")
+```
+```{R}
+rand_dist<-vector() 
+
+for(i in 1:5000){ 
+  new<-data.frame(time=sample(bird$time),size=bird$size)
+  rand_dist[i]<-mean(new[new$size=="1",]$time) 
+  mean(new[new$size=="0",]$time)
+}
+
+library(tidyverse)
+bird%>%group_by(size)%>%
+  summarize(means=mean(time))%>%
+  summarize(`mean_diff:`=diff(means))
+
+{hist(rand_dist,main="",ylab=""); abline(v = -4.330437,col="red")}
+```
+*Above, one can observe a randmization test. This simulates the randomization of data 5000 tmes to observe mean time, which in this case is the amount of time of extinction for the 62 bird species in this dataset from the British islands.*
+*In this study, the null hypothesis is that there is no significant difference between the bird popultions due to size.*
+*The alternatve hypothesis is that there is a significant difference.*
+
+##Linear Regression Model
+
+```{R}
+fit<-lm(time~nesting, data=bird) 
+summary(fit)
+coef(fit)
+
+library(ggplot2)
+ggplot(bird, aes(x=nesting, y=time,group=status))+geom_point(aes(color=status))+  geom_smooth(method="lm",formula=y~1,se=F,fullrange=T,aes(color=status))+xlab("nesting")
+
+ggplot(bird, aes(x=nesting, y=time,group=size))+geom_point(aes(color=size))+  geom_smooth(method="lm",formula=y~1,se=F,fullrange=T,aes(color=size))+xlab("nesting")
+
+```
+*The coefficients can be interpreted as the slope of the linear regression or relationship between the variables of nesting and time in the dataset. The first graph displays the linear  regression between time and nesting and the different color points indicate status(resident r migrant). The second graph shows the same relationship but with the color points showing the size of the bird (large or small).*
+
+```{R}
+library(sandwich); library(lmtest)
+bptest(fit)
+summary(fit)$coef[,1:2]
+coeftest(fit, vcov=vcovHC(fit))[,1:2]
+
+```
+*Heteroskedasticity assumption is checked through the bptest() and it is shown to exist through the p value displayed. The linear regression model is recomputed with robust standard errors through the coeftest(fit,vcov=vcovHC(fit))*
+*Changes are observed before and after the robust standard error computation.The estimate remain the same but testandard error increases by about 0.2 when observing the relationship between time and nesting.*
+
+##Regression Model with Bootstrapped Errors
+
+```{R}
+means<-vector() 
+for(i in 1:5000){ 
+  samp<-sample(bird$time,replace=T) 
+  means[i]<-mean(samp) 
+  }
+
+quantile(means,c(.025, .975))
+
+ggplot()+geom_histogram(aes(means))+geom_vline(xintercept=quantile(means,c(.025,.975)))
+
+bootse<-function(x,n=5000){  
+  means<-vector()  
+  for(i in 1:n){    
+    means[i]<- mean(sample(x,replace=T))  
+  }  
+  return(sd(means)) 
+}
+
+mean_se<-bird%>%group_by(size)%>%summarize(mean_time=mean(time),se=bootse(time)) 
+mean_se
+
+ggplot(mean_se, aes(x=size,y=mean_time))+geom_bar(stat="identity")+                           geom_errorbar(aes(ymax=mean_time+se, ymin=mean_time-se), width=.5)
+```
+*The first graph indicates the 95th percentile. Next, the standard error and mean time are calculated per size of the animal (1=large, 0=small).The bar graph compares mean times based on time and depicts the bootstrapping/error bars. It isshown that small birds have a higher average time of extinction on the islands than large birds (the difference is about 4.3).*
+
+```{R}
+fit6<-lm(time~size+nesting,data=bird)
+fitvals<-fit6$fitted.value
+
+resids<-fit6$residuals 
+fitted<-fit6$fitted.values  
+ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, color='red')
+
+resid_resamp<-replicate(5000,{    
+  new_resids<-sample(resids,replace=TRUE)     
+  bird$new_y<-fitted+new_resids    
+  fit6<-lm(time~size+nesting,data=bird)     
+  coef(fit6) 
+  })
+```
+*This graph depicts the homoskedasticity and linearity assumptions of the data.*
+
+##Logistic Regression
+
+```{R}
+fit2<-glm(size~., family="binomial", data=bird) 
+coeftest(fit2)
+
+fit3<-glm(status~time, family="binomial", data=bird) 
+coeftest(fit3)
+
+bird2<-bird%>%
+  transmute(species,                         
+            time,                         
+            nesting,                         
+            status,                         
+            outcome=size,                         
+            y=as.numeric(outcome))
+bird2$outcome<-factor(bird2$outcome,levels=c("large","small"))
+pca1<-princomp(bird[c('time','nesting','size')])
+bird2$predictor<-pca1$scores[,1]
+                                                                                                         
+fit4<-glm(y~predictor,data=bird2,family="binomial") 
+bird2$prob<-predict(fit4,type="response")
+
+
+ggplot(bird2, aes(predictor,prob))+geom_point(alpha=.5,size=3)
+
+```
+*The coeffcients listed above are the slopes which indiate the relationship between time and size, and time with status.A breakdown by species can be observed for each of the 62 birds.*
+
+
+```{R}
+library(plotROC)
+
+
+prob1<-predict(fit4,type="response")  
+pred<-ifelse(prob1>.5,1,0) 
+table(truth=bird$size, prediction=pred)%>%addmargins
+
+sens<-function(p,data=bird, y=y) mean(bird[bird$y==1,]$prob1>p) 
+spec<-function(p,data=bird, y=y) mean(bird[bird$y==0,]$prob1<p) 
+sensitivity<-sapply(seq(0,1,.01),sens,bird) 
+specificity<-sapply(seq(0,1,.01),spec,bird)
+
+
+#Interactions
+exp(coef(fit4))
+
+
+ROCplot<-ggplot(bird)+geom_roc(aes(d=size,m=prob1), n.cuts=0)+  geom_segment(aes(x=0,xend=1,y=0,yend=1),lty=2) 
+ROCplot
+```
+
+
+```{R}
+library(glmnet)
+class_diag<-function(probs,truth){ 
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)  
+  acc=sum(diag(tab))/sum(tab)  
+  sens=tab[2,2]/colSums(tab)[2]  
+  spec=tab[1,1]/colSums(tab)[1]  
+  ppv=tab[2,2]/rowSums(tab)[2]  
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) 
+    truth<-as.numeric(truth)-1  
+  ord<-order(probs, decreasing=TRUE)  
+  probs <- probs[ord]; truth <- truth[ord]  
+  TPR=cumsum(truth)/max(1,sum(truth))   
+  FPR=cumsum(!truth)/max(1,sum(!truth))  
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)  
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)  
+  n <- length(TPR)  
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )  
+  data.frame(acc,sens,spec,ppv,auc)
+  } 
+
+prob<-predict(fit4,type="response")
+
+class_diag(prob,bird2$y)
+
+```
+*The AUC fo this data was 0.73 with accuracy of.58, sensitivity of .9117 and specificity of .1786.*
+
+```{R}
+k=5 
+data1<-bird2[sample(nrow(bird2)),]
+folds<-cut(seq(1:nrow(bird2)),breaks=k,labels=F)
+diags<-NULL 
+for(i in 1:k){ 
+  train<-data1[folds!=i,]   
+  test<-data1[folds==i,]  
+  truth<-test$y 
+  fit<-glm(y~status,data=train,family="binomial")  
+  probs<-predict(fit,newdata = test,type="response")  
+  diags<-rbind(diags,class_diag(probs,truth)) 
+}
+
+apply(diags,2,mean)
+```
+*The 10 fold CV reveals the AUC is 0.4140476 with accuracy of .4820513, senstivity of.9 and specificity of 0.*
+
+##LASSO Regression
+
+```{R}
+library(glmnet)
+x<-model.matrix(fit2)
+y<-as.matrix(bird2$status)
+cv<-cv.glmnet(x,y,family="binomial") 
+lasso<-glmnet(x,y,family="binomial",lambda=cv$lambda.1se) 
+coef(lasso)
+
+```
+*In the lasso, one can observe thatstatus is correlated with time.*
+
+
+##Conclusion
+*In conclusion, it is hard to determine which variables create an effect on the amount of time a species wil be present on the island. It does seem that there is a correlation between time and size, and time and status.*
+
+
+

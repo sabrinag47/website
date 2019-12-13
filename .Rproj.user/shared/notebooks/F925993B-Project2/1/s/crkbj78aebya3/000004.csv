@@ -1,0 +1,2 @@
+"0",""
+"0","{hist(rand_dist,main="""",ylab=""""); abline(v = -4.330437,col=""red"")}"

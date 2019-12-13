@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blogs on Sabrina Guerra</title>
+    <link>/blog/</link>
+    <description>Recent content in Blogs on Sabrina Guerra</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Thu, 12 Dec 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Blog: Python</title>
+      <link>/blog/blog_12dec2019/</link>
+      <pubDate>Thu, 12 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/blog_12dec2019/</guid>
+      <description>library(reticulate)hi&amp;lt;-&amp;quot;Hello&amp;quot;hi=&amp;quot;world&amp;quot;print(r.hi,hi)## Hello worldcat(c(hi,py$hi))## Hello worldPython and R are very both very useful and have similar languages but they each have their benefits.While the languages are distinct they can be used concurrently and be used to solve one problem.I find it interesting how python can organize large amounts of information and quantify it. An example of this would be the study of DNA nucleotides.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,21 @@
+---
+title: "Blog: Python"
+output: html_document
+date: 2019-12-10
+tags: ["Python"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(python = reticulate::eng_python)
+```
+
+```{R}
+library(reticulate)
+hi<-"Hello"
+```
+
+```{python3}
+import pandas
+hi="world"
+print(r.hi,hi)
+```

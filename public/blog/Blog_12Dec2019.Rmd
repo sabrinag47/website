@@ -1,0 +1,38 @@
+---
+title: "Blog: Python"
+date: 2019-12-12
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{R}
+library(reticulate)
+hi<-"Hello"
+
+```
+
+```{python}
+hi="world"
+print(r.hi,hi)
+```
+
+```{R}
+cat(c(hi,py$hi))
+```
+
+*Python and R are very both very useful and have similar languages but they each have their benefits.*
+*While the languages are distinct they can be used concurrently and be used to solve one problem.*
+*I find it interesting how python can organize large amounts of information and quantify it. An example of this would be the study of DNA nucleotides.*
+*By using Python, it becomes easier to determine differences between sequences and how they are aligned with each other.*
+
+```{python}
+my_seq="ATCATCATG"
+
+import re
+re.findall(r"\w\w\w",my_seq)
+```
+*The example above shows how easy it is to observe 3-mers in a DNA sequence. This is particularly useful when wanting to know DNA sequences to observe amino acids and protein structures.*
+
